@@ -5,6 +5,10 @@ const mongoose = require('mongoose')
 const port = 3002 ;
 const cors = require('cors');
 const bcrypt = require('bcrypt-nodejs');
+const bodyparser = require('body-parser');
+const nodemailer = require('nodemailer');
+const Register = require('./register');
+//const requestIp = require('request-ip');
 dotenv.config() ;
 const phash = new Map([
     ["cricket",0],
@@ -32,9 +36,12 @@ const schema = new mongoose.Schema({
     image:[String]
   });
 var People = mongoose.model('users',schema) ;
+app.set('view engine', 'pug');
 app.use(express.json()) ; //Middleware
 app.use(cors()) ;
+app.enable('trust proxy')
 app.get('/' , (req,res)=>{
+    console.log(req.ip);
     res.json('Hi World') ;
 });
 app.get('/getuser/:userId',(req,res)=>{
@@ -42,6 +49,7 @@ app.get('/getuser/:userId',(req,res)=>{
     res.status(200).json(result) ;
     })
 })
+app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People)}) ;
 app.post('/api',(req,res)=>{
     const { gender,ihash } = req.body ;
     var arr = [] ;
@@ -80,56 +88,7 @@ app.post('/api',(req,res)=>{
         res.status(200).json(arr) ;
     })
 })
-app.post('/register',(req,res)=>{
-    const { email,name,password,gender } = req.body ;  //Destructuring
-    var bio = '',number='',interests=[],hobbies='',dept='',Year='' ;
-    if(!email||!name||!password)
-    {
-       if(!email)
-       {
-        return res.status(400).json('Pls enter your email id') ;
-       }
-       if(!password)
-       {
-        return res.status(400).json('Pls enter your password') ;
-       }
-       if(!name)
-       {
-        return res.status(400).json('Pls enter your name') ;
-       }
-    }
-    const hash = bcrypt.hashSync(password) ;
-    People.find({'email':email},(err,result)=>{
-        if(err) throw err ;
-        if(result.length){res.status(200).json('User with the same Email Already Exists');
-    }
-        else{
-            var arr = [] ;
-            if(interests.length > 0){
-            const arr = new Array(5).fill(0);
-            interests.forEach((i)=>{
-                arr[phash.get(i)]++ ;
-            })
-        } //If user has not completed his/her profile
-            new People({
-                name : name,
-                number : number,
-                email: email,
-                bio:bio,
-                password: hash,
-                hobbies:hobbies,
-                passion:interests,
-                ihash:arr,
-                dept:dept,
-                Year:Year,
-                gender:gender
-            }).save((err,result)=>{
-                if(err) throw err ;
-                else res.status(200).json('Success!')
-            })
-        }
-    })
-})
+app.post('/register',(req,res)=>{Register.register(req,res,bcrypt,nodemailer,People)}) ;
 app.post('/login',(req,res)=>{
     const {email,password} = req.body ;
     People.find({'email':email},(err,result)=>{
@@ -179,7 +138,11 @@ app.post('/sendreq',(req,res)=>{
                 obj['matches'] = i.matches ; 
             })
         })
-        item.matchreq.push(obj) ;
+        var b = item.matchreq;
+        b.push(obj) ;
+        People.updateOne({'email':emailsender},{
+                        matchreq: b
+                      })
     })
     res.status(200).json('Request Sent !') ;
   });
@@ -189,7 +152,7 @@ app.post('/resreq',(req,res)=>{
  People.find({'emsil':email},(err,result)=>{
      result.forEach((item)=>{
          if(des == 1){
-             item.matches++ ;
+             var n = item.matches ;
              var a = {} ;
              a['name'] = item.name ;
              a['age'] = item.age ;
@@ -198,10 +161,11 @@ app.post('/resreq',(req,res)=>{
              a['passion'] = item.passion ;
              a['gender'] = item.gender ;
              a['matches'] = item.matches ; 
+             a['id'] = item._id ;
              People.find({'email':emailsender},(err,result)=>{
                  var obj = {} ;
                  result.forEach((i)=>{
-                     i.matches++ ;
+                     var num = i.matches ;
                      obj['name'] = i.name ;
                      obj['age'] = i.age ;
                      obj['bio'] = i.bio ;
@@ -209,14 +173,35 @@ app.post('/resreq',(req,res)=>{
                      obj['passion'] = i.passion ;
                      obj['gender'] = i.gender ;
                      obj['matches'] = i.matches ; 
-                     i.connected.push(a) ;
+                     obj['id'] = i._id ;
+                     var b = i.connected ;
+                     b.push(a) ;
+                     People.updateOne({'email':emailsender},
+                      {
+                        matches:num+1,
+                        connected:b
+                      }
+                     )
                  })
              })
-             item.connected.push(obj) ;
-             item.matchreq.filter(i => i != emailsender) ;
+            var B = item.connected ;
+            B.push(obj) ;
+            var m = item.matchreq;
+            m.filter(i => i != emailsender) ;
+             People.updateOne({'email':emailsender},
+             {
+                matches:n+1,
+                connected: B,
+                matchreq:m
+             })
          }
          else{
-            item.matchreq.filter(i => i != emailsender) ; 
+            var m = item.matchreq;
+            m.filter(i => i != emailsender) ;
+             People.updateOne({'email':emailsender},
+             {
+                matchreq:m
+             })
          }
      })
  })
