@@ -23,9 +23,9 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
        {
         return res.status(400).json('Pls enter your name') ;
        }
-       if(!name)
+       if(!gender)
        {
-        return res.status(400).json('Pls enter your name') ;
+        return res.status(400).json('Pls enter your gender') ;
        }
     }
     People.find({'email':email},async(err,result)=>{
