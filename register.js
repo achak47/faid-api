@@ -1,7 +1,7 @@
 const jwt = require ('jsonwebtoken');
 const mongoose = require('mongoose') ;
 const account_activate_api_key = "accountactivate123";
-CLIENT_URL="http://localhost:3002";
+CLIENT_URL="https://faid-api.herokuapp.com";
 const schema = new mongoose.Schema({
   email : String,
   count : Number
