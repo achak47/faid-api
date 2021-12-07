@@ -41,7 +41,6 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           {
             count: r[0].count+1
           },(err,re)=>{})
-          res.status(200).json('Updated') ;
          }
       }
       else{
@@ -118,7 +117,7 @@ const verify = (req,res,bcrypt,People)=>{
                 }).save((err,result)=>{
                     if(err) throw err ;
                     else{
-                      Spam.remove({'email':email}) ;
+                      Spam.remove({'email':email},(err,re)=>{}) ;
                       return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid' })
                        }
                 })
