@@ -54,21 +54,6 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     })
     const token = jwt.sign ({name, email, password, gender}, account_activate_api_key, {expiresIn : '30m'});
     let testAccount = await nodemailer.createTestAccount ();
-    /*
-    let transporter = nodemailer.createTransport({
-    host: 'smtp.mail.yahoo.com',
-    port: 465,
-    service:'yahoo',
-    secure: false,
-    auth : {
-      user : process.env.MAIL_USERNAME,
-      pass : process.env.MAIL_PASSWORD
-    },
-    debug : false, 
-    logger : true,
-  })
- */
-  console.log(process.env.MAIL_USERNAME ) ;
   let transporter = nodemailer.createTransport ({
     service:'gmail',
     auth : {
