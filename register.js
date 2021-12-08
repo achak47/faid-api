@@ -76,7 +76,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           res.status(500).json ({yo : 'error'});
         }else {
           console.log ('Message sent : ' + info.response);
-          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification');
+          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification , if activation link is not working Pls register again');
         };
         return res.end();
       });
