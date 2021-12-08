@@ -30,7 +30,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     }
     People.find({'email':email},async(err,result)=>{
         if(err) throw err ;
-        if(result.length){res.status(200).json('User with the same Email Already Exists');}
+        if(result.length){return res.status(400).json('User with the same Email Already Exists');}
     else{
     Spam.find({'email':email},(err,r)=>{
       if(r.length){
@@ -76,7 +76,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           res.status(500).json ({yo : 'error'});
         }else {
           console.log ('Message sent : ' + info.response);
-          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification , if activation link is not working Pls register again');
+          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification , if activation link is not working Please refresh the page and register again');
         };
         return res.end();
       });
@@ -96,7 +96,7 @@ const verify = (req,res,bcrypt,People)=>{
             People.find({'email':email},async(err,result)=>{
                 if(err) throw err ;
                 if(result.length){
-                  return res.render('index', { title: 'Verified', message: 'You are verified , go and use our App' })
+                  return res.render('index', { title: 'Verified', message: 'You are verified , login to our App' })
             }
             else{
                 var arr = []
