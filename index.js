@@ -11,15 +11,46 @@ const Register = require('./register');
 //const requestIp = require('request-ip');
 dotenv.config() ;
 const phash = new Map([
-    ["cricket",0],
-    ["football",1],
-    ["music",2],
-    ["pets",3],
-    ["politics",4]
+["Cricket",0],
+["Football",1],
+["Swimming",2],
+["MMA/Boxing",3],
+["E-Sports",4],
+["Karate",5],
+["Astrology",6],
+["Science & Technology",7],
+["Hardcore Engineering",8],
+["AI",9],
+["Coding",10],
+["Psychology",11],
+["Philosophy",12],
+["Western Music",13],
+["Indian Classical Music",14],
+["Rap Music",15],
+["Bollywood Songs",16],
+["Bengali Songs",17],
+["Classic English Films",18],
+["Classic Hindi Films",19],
+["Contemporary English Films",20],
+["Contemporary Bollywood Films",21],
+["Bengali Movies",22],
+["Video Games",23],
+["Politics",24],
+["Debates",25],
+["Fitness/Gym",26],
+["Puppies/Dogs",27],
+["Cats/Kittens",28],
+["K-Pop",29],
+["Anime",30],
+["Finance",31],
+["Graphic Designing",32],
+["Fashion",33],
+["Painting",34],
+["Writing",35],
+["Reading",36]
 ]) ;
 const schema = new mongoose.Schema({
     name : String,
-    number: String,
     dept: String,
     Year: String,
     email : String,
@@ -32,8 +63,11 @@ const schema = new mongoose.Schema({
     connected: [String],
     matchreq:[String],
     gender: String,
-    profileimage: String,
-    image:[String]
+    image:[String],
+    insearch: String,
+    fb: String,
+    insta: String,
+    twitter: String
   });
 var People = mongoose.model('users',schema) ;
 app.set('view engine', 'pug');
@@ -78,8 +112,7 @@ app.post('/api',(req,res)=>{
         obj['gender'] = item.gender ;
         obj['matches'] = item.matches ;
         obj['percent'] = count ;
-        obj['profilepic'] = item.profileimage ;
-        obj['image'] = 
+        obj['image'] = item.image ;
         arr.push(obj) ;
         })
         arr.sort((a,b)=>{
@@ -100,7 +133,7 @@ app.post('/login',(req,res)=>{
     }) ;
 })
 app.post('/update',(req,res)=>{
-    const {email,password,number,bio,hobbies,interests,department,Year,gender} = req.body ;
+    const {email,password,bio,hobbies,interests,department,Year,image,insearch,fb,insta,twitter,profilepic} = req.body ;
     var arr = [] ;
             if(interests.length > 0){
              arr = new Array(5).fill(0);
@@ -108,15 +141,20 @@ app.post('/update',(req,res)=>{
                 arr[phash.get(i)]++ ;
             })
         }
+        image.unshift(profilepic) ;
     People.updateOne({'email':email},{
-          number : number ,
           bio : bio ,
           hobbies : hobbies ,
           passion : interests ,
           ihash : arr ,
           department : department ,
           Year : Year ,
-          gender: gender
+          insearch:insearch,
+          fb:fb,
+          insta:insta,
+          twitter:twitter,
+          image:image
+          
 },(err,response)=>{
  if(err) throw err ;
  res.status(200).json('Profile succesfully updated') ;
@@ -136,6 +174,8 @@ app.post('/sendreq',(req,res)=>{
                 obj['passion'] = i.passion ;
                 obj['gender'] = i.gender ;
                 obj['matches'] = i.matches ; 
+                obj['profilepic'] = i.image[0] ;
+                obj['id'] = i._id ;
             })
         })
         var b = item.matchreq;
@@ -162,6 +202,7 @@ app.post('/resreq',(req,res)=>{
              a['gender'] = item.gender ;
              a['matches'] = item.matches ; 
              a['id'] = item._id ;
+             a['profilepic'] = item.image[0] ;
              People.find({'email':emailsender},(err,result)=>{
                  var obj = {} ;
                  result.forEach((i)=>{
@@ -174,6 +215,7 @@ app.post('/resreq',(req,res)=>{
                      obj['gender'] = i.gender ;
                      obj['matches'] = i.matches ; 
                      obj['id'] = i._id ;
+                     obj['profilepic'] = i.image[0] ;
                      var b = i.connected ;
                      b.push(a) ;
                      People.updateOne({'email':emailsender},
