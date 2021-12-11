@@ -1,7 +1,7 @@
 const jwt = require ('jsonwebtoken');
 const mongoose = require('mongoose') ;
 const account_activate_api_key = "accountactivate123";
-CLIENT_URL="https://faid-api.herokuapp.com";
+CLIENT_URL="http://localhost:3002";
 const schema = new mongoose.Schema({
   email : String,
   count : Number
@@ -25,12 +25,12 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
        }
        if(!gender)
        {
-        return res.status(400).json('Pls enter your gender') ;
+        return res.status(400).json('Pls mention your gender') ;
        }
     }
     People.find({'email':email},async(err,result)=>{
         if(err) throw err ;
-        if(result.length){return res.status(400).json('User with the same Email Already Exists');}
+        if(result.length){res.status(200).json('User with the same Email Already Exists');}
     else{
     Spam.find({'email':email},(err,r)=>{
       if(r.length){
@@ -41,6 +41,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           {
             count: r[0].count+1
           },(err,re)=>{})
+          res.status(200).json('Updated') ;
          }
       }
       else{
@@ -53,6 +54,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     })
     const token = jwt.sign ({name, email, password, gender}, account_activate_api_key, {expiresIn : '30m'});
     let testAccount = await nodemailer.createTestAccount ();
+  console.log(process.env.MAIL_USERNAME ) ;
   let transporter = nodemailer.createTransport ({
     service:'gmail',
     auth : {
@@ -76,7 +78,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           res.status(500).json ({yo : 'error'});
         }else {
           console.log ('Message sent : ' + info.response);
-          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification , if activation link is not working Please refresh the page and register again');
+          res.status(200).json ('Mail sent successfully ! kindly check your Inbox or spam for your account verification');
         };
         return res.end();
       });
@@ -85,7 +87,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
 }
 const verify = (req,res,bcrypt,People)=>{
     const {token} = req.params;  //Destructuring
-    var bio = '',number='',interests=[],hobbies='',dept='',Year='' ;
+    var bio = '',interests=[],hobbies='',dept='',Year='' ;
     if (token) {
         //decoding the jwt token received from the parameters of the authentication url
         jwt.verify (token, account_activate_api_key, function (err, decodedToken){
@@ -96,7 +98,7 @@ const verify = (req,res,bcrypt,People)=>{
             People.find({'email':email},async(err,result)=>{
                 if(err) throw err ;
                 if(result.length){
-                  return res.render('index', { title: 'Verified', message: 'You are verified , login to our App' })
+                  return res.render('index', { title: 'Verified', message: 'You are verified , go and use our App' })
             }
             else{
                 var arr = []
@@ -104,7 +106,6 @@ const verify = (req,res,bcrypt,People)=>{
              //If user has not completed his/her profile
                 new People({
                     name : name,
-                    number : number,
                     email: email,
                     bio:bio,
                     password: hash,
@@ -117,7 +118,7 @@ const verify = (req,res,bcrypt,People)=>{
                 }).save((err,result)=>{
                     if(err) throw err ;
                     else{
-                      Spam.remove({'email':email},(err,re)=>{}) ;
+                      Spam.remove({'email':email}) ;
                       return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid' })
                        }
                 })
