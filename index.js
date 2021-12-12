@@ -90,6 +90,7 @@ app.post('/api',(req,res)=>{
     People.find({'gender':gender},(err,result)=>{
         //console.log(result) ;
         result.forEach((item)=>{
+        if(item.ihash.length != 0){
         var obj = {} ;
         var count = 0 ;
         if(ihash.length != 0)
@@ -98,9 +99,6 @@ app.post('/api',(req,res)=>{
             if(ihash[i] == item.ihash[i]) {
                 if(ihash[i])count+=2 ;
                 else count ++ ;
-            }
-            else{
-                count-- ;
             }
         }
     }
@@ -111,9 +109,10 @@ app.post('/api',(req,res)=>{
         obj['passion'] = item.passion ;
         obj['gender'] = item.gender ;
         obj['matches'] = item.matches ;
-        obj['percent'] = count ;
+        obj['percent'] = (count/10)*100 ;
         obj['image'] = item.image ;
         arr.push(obj) ;
+        }
         })
         arr.sort((a,b)=>{
           return b.percent-a.percent ;              //sorting the entries in descending order of count
