@@ -141,7 +141,7 @@ app.post('/login',(req,res)=>{
     }) ;
 })
 app.post('/update',(req,res)=>{
-    const {email,password,bio,hobbies,interests,department,Year,image,insearch,fb,insta,twitter,profilepic} = req.body ;
+    const {email,password,bio,hobbies,interests,department,Year,image,insearch,fb,insta,twitter} = req.body ;
     var arr = [] ;
             if(interests.length > 0){
              arr = new Array(5).fill(0);
@@ -149,7 +149,6 @@ app.post('/update',(req,res)=>{
                 arr[phash.get(i)]++ ;
             })
         }
-        image.unshift(profilepic) ;
     People.updateOne({'email':email},{
           bio : bio ,
           hobbies : hobbies ,
