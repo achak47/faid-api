@@ -49,6 +49,9 @@ const phash = new Map([
 ["Writing",35],
 ["Reading",36]
 ]) ;
+function getKey(value) {
+    return [...phash].find(([key, val]) => val == value)[0]
+  }
 const schema = new mongoose.Schema({
     name : String,
     dept: String,
@@ -91,13 +94,16 @@ app.post('/api',(req,res)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
-        var obj = {} ;
+        var obj = {} , intr = [];
         var count = 0 ;
         if(ihash.length != 0)
         {
         for(var i=0;i<5;i++){
             if(ihash[i] == item.ihash[i]) {
-                if(ihash[i])count+=2 ;
+                if(ihash[i]){count+=2 ;
+                intr.push(getKey(i)) ;
+                
+                }
                 else count ++ ;
             }
         }
@@ -106,7 +112,10 @@ app.post('/api',(req,res)=>{
         obj['age'] = item.age ;
         obj['bio'] = item.bio ;
         obj['Year'] = item.Year ;
-        obj['passion'] = item.passion ;
+        obj['passion'] = item.hobbies ;
+        obj['department'] = item.dept ;
+        obj['insearch'] = item.insearch ;
+        obj['interests'] = intr ;
         obj['gender'] = item.gender ;
         obj['matches'] = item.matches ;
         obj['percent'] = (count/10)*100 ;
