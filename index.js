@@ -157,9 +157,7 @@ app.post('/update',(req,res)=>{
           department : department ,
           Year : Year ,
           insearch:insearch,
-          fb:fb,
           insta:insta,
-          twitter:twitter,
           image:image
           
 },(err,response)=>{
