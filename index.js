@@ -98,7 +98,7 @@ app.post('/api',(req,res)=>{
         var count = 0 ;
         if(ihash.length != 0)
         {
-        for(var i=0;i<5;i++){
+        for(var i=0;i<37;i++){
             if(ihash[i] == item.ihash[i]) {
                 if(ihash[i]){count+=2 ;
                 intr.push(getKey(i)) ;
@@ -144,7 +144,7 @@ app.post('/update',(req,res)=>{
     const {email,password,bio,hobbies,interests,department,Year,image,insearch,insta} = req.body ;
     var arr = [] ;
             if(interests.length > 0){
-             arr = new Array(5).fill(0);
+             arr = new Array(37).fill(0);
             interests.forEach((i)=>{
                 arr[phash.get(i)]++ ;
             })
