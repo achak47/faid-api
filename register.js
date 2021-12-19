@@ -123,7 +123,8 @@ const verify = (req,res,bcrypt,People,Index)=>{
                       new Index({
                         userid: result._id ,
                         index: 0,
-                        reqlist: []
+                        reqlist: [],
+                        emailuser: email
                       }).save((err,ree)=>{console.log(err)})
                       return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid' })
                        }
