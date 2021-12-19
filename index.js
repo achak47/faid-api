@@ -135,10 +135,10 @@ app.post('/api',(req,res)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
-          if (m_req.includes(item._id)){
+          if (item.matchreq.includes(id)){
             flag = 1 ;
           }
-          if(con.includes(item._id)){
+          if(item.connected.includes(id)){
             flag = 2 ;
           }
         var obj = {} , intr = [];
