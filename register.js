@@ -41,7 +41,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
           {
             count: r[0].count+1
           },(err,re)=>{})
-          res.status(200).json('Updated') ;
+          //res.status(200).json('Updated') ;
          }
       }
       else{
