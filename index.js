@@ -70,7 +70,8 @@ const schema = new mongoose.Schema({
     insearch: String,
     fb: String,
     insta: String,
-    twitter: String
+    twitter: String,
+    age:Number
   });
 var People = mongoose.model('users',schema) ;
 app.set('view engine', 'pug');
@@ -141,7 +142,7 @@ app.post('/login',(req,res)=>{
     }) ;
 })
 app.post('/update',(req,res)=>{
-    const {email,password,bio,hobbies,interests,department,Year,image,insearch,insta} = req.body ;
+    const {email,password,bio,hobbies,interests,department,Year,image,insearch,insta,age} = req.body ;
     var arr = [] ;
             if(interests.length > 0){
              arr = new Array(37).fill(0);
@@ -158,7 +159,8 @@ app.post('/update',(req,res)=>{
           Year : Year ,
           insearch:insearch,
           insta:insta,
-          image:image
+          image:image,
+          age:age
           
 },(err,response)=>{
  if(err) throw err ;
@@ -167,62 +169,34 @@ app.post('/update',(req,res)=>{
 })
 app.post('/sendreq',(req,res)=>{
   const {email,emailsender} = req.body ;
-  People.find({'email':email},(err,result)=>{
-    result.forEach((item)=>{
-        var obj = {} ;
-        People.find({'email':emailsender},(err,result)=>{
+  console.log(email,emailsender) ;
+  People.find({'email':emailsender},(err,result)=>{
             result.forEach((i)=>{
-                obj['name'] = i.name ;
-                obj['age'] = i.age ;
-                obj['bio'] = i.bio ;
-                obj['Year'] = i.Year ;
-                obj['passion'] = i.passion ;
-                obj['gender'] = i.gender ;
-                obj['matches'] = i.matches ; 
-                obj['profilepic'] = i.image[0] ;
-                obj['id'] = i._id ;
+              var id ;
+              People.find({'email':email},(err,re)=>{
+                id = re[0]._id ;
+                if(re[0].matchreq.includes(i._id))
+                {
+                  return res.status(200).json('Request already sent') ;
+                }
+              })
+              People.findOneAndUpdate({'email':email},{ $push : { matchreq: i._id }},(err,res)=>{})
+              Index.findOneAndUpdate({'userid':i._id},{ $push : { reqlist: id }},{$inc : {'index' : 1}},(err,res)=>{})
             })
-        })
-        var b = item.matchreq;
-        b.push(obj) ;
-        People.updateOne({'email':emailsender},{
-                        matchreq: b
-                      })
-    })
     res.status(200).json('Request Sent !') ;
   });
 }) ;
 app.post('/resreq',(req,res)=>{
  const {des,email,emailsender} = req.body ;
- People.find({'emsil':email},(err,result)=>{
+ People.find({'email':email},(err,result)=>{
      result.forEach((item)=>{
          if(des == 1){
              var n = item.matches ;
-             var a = {} ;
-             a['name'] = item.name ;
-             a['age'] = item.age ;
-             a['bio'] = item.bio ;
-             a['Year'] = item.Year ;
-             a['passion'] = item.passion ;
-             a['gender'] = item.gender ;
-             a['matches'] = item.matches ; 
-             a['id'] = item._id ;
-             a['profilepic'] = item.image[0] ;
              People.find({'email':emailsender},(err,result)=>{
-                 var obj = {} ;
                  result.forEach((i)=>{
                      var num = i.matches ;
-                     obj['name'] = i.name ;
-                     obj['age'] = i.age ;
-                     obj['bio'] = i.bio ;
-                     obj['Year'] = i.Year ;
-                     obj['passion'] = i.passion ;
-                     obj['gender'] = i.gender ;
-                     obj['matches'] = i.matches ; 
-                     obj['id'] = i._id ;
-                     obj['profilepic'] = i.image[0] ;
                      var b = i.connected ;
-                     b.push(a) ;
+                     b.push(i._id) ;
                      People.updateOne({'email':emailsender},
                       {
                         matches:num+1,
@@ -232,7 +206,7 @@ app.post('/resreq',(req,res)=>{
                  })
              })
             var B = item.connected ;
-            B.push(obj) ;
+            B.push(item._id) ;
             var m = item.matchreq;
             m.filter(i => i != emailsender) ;
              People.updateOne({'email':emailsender},
