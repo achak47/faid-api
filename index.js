@@ -199,16 +199,25 @@ app.post('/sendreq',(req,res)=>{
             result.forEach((i)=>{
               var id ;
               People.find({'email':email},(err,re)=>{
+                if(i.matchreq.includes(re[0]._id))
+                {
+                  return res.status(200).json('The person has already sent a like request to you , Pls accept that instead of sending the like request back') ;
+                }
                 id = re[0]._id ;
                 if(re[0].matchreq.includes(i._id))
                 {
                   return res.status(200).json('Request already sent') ;
                 }
+                else{
+                  People.findOneAndUpdate({'email':email},{ $push : { matchreq: i._id }},(err,ress)=>{
+                    Index.findOneAndUpdate({'userid':i._id},{ $push : { reqlist: id }},{$inc : {'index' : 1}},(e,ress)=>{
+                      return res.status(200).json('Request Sent !') ;
+                    })
+                  })
+                }
               })
-              People.findOneAndUpdate({'email':email},{ $push : { matchreq: i._id }},(err,res)=>{})
-              Index.findOneAndUpdate({'userid':i._id},{ $push : { reqlist: id }},{$inc : {'index' : 1}},(err,res)=>{})
+
             })
-    res.status(200).json('Request Sent !') ;
   });
 }) ;
 app.post('/resreq',(req,res)=>{
