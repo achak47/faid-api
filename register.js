@@ -85,7 +85,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
  }
 })
 }
-const verify = (req,res,bcrypt,People)=>{
+const verify = (req,res,bcrypt,People,Index)=>{
     const {token} = req.params;  //Destructuring
     var bio = '',interests=[],hobbies='',dept='',Year='' ;
     if (token) {
@@ -114,11 +114,17 @@ const verify = (req,res,bcrypt,People)=>{
                     ihash:arr,
                     dept:dept,
                     Year:Year,
-                    gender:gender
+                    gender:gender,
+                    age:0 
                 }).save((err,result)=>{
                     if(err) throw err ;
                     else{
                       Spam.remove({'email':email}) ;
+                      new Index({
+                        userid: result._id ,
+                        index: 0,
+                        reqlist: []
+                      }).save((err,ree)=>{console.log(err)})
                       return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid' })
                        }
                 })
