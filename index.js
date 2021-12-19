@@ -76,7 +76,8 @@ const schema = new mongoose.Schema({
 const schema1 = new mongoose.Schema({
     userid: String,
     index: Number,
-    reqlist : [String]
+    reqlist : [String],
+     emailuser : String
   })
 /*
   var whitelist = ['http://localhost:3000','https://flirtaid-nyk.web.app']
