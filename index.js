@@ -114,12 +114,28 @@ app.get('/getuser/:userId',(req,res)=>{
 })
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
-    const { gender,ihash } = req.body ;
+     const { email,gender,ihash } = req.body ;
+    var m_req = [] ,id , con ;
+    //var gender ;
+    People.find({'email':email},(err,result)=>{
+       m_req = result[0].matchreq ;
+       id = result[0]._id ;
+       con = result[0].connected ;
+       //if(result[0].gender == 'Male') gender = 'Female' ;
+       //else gender = 'Male' ;
+    })
     var arr = [] ;
+    var flag = 0 ;
     People.find({'gender':gender},(err,result)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
+          if (m_req.includes(item._id)){
+            flag = 1 ;
+          }
+          if(con.includes(item._id)){
+            flag = 2 ;
+          }
         var obj = {} , intr = [];
         var count = 0 ;
         if(ihash.length != 0)
@@ -147,12 +163,16 @@ app.post('/api',(req,res)=>{
         obj['percent'] = (count/10)*100 ;
         obj['image'] = item.image ;
         obj['email'] = item.email ;
+        obj['flag'] = flag ;
         arr.push(obj) ;
         }
         })
         arr.sort((a,b)=>{
           return b.percent-a.percent ;              //sorting the entries in descending order of count
         }) ;
+        var idx ;
+        Index.find({'userid':id},(err,result)=>{ idx = result[0].index })
+        arr = arrayRotate(arr,idx) ;
         res.status(200).json(arr) ;
     })
 })
