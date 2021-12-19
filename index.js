@@ -146,6 +146,7 @@ app.post('/api',(req,res)=>{
         obj['matches'] = item.matches ;
         obj['percent'] = (count/10)*100 ;
         obj['image'] = item.image ;
+        obj['email'] = item.email ;
         arr.push(obj) ;
         }
         })
