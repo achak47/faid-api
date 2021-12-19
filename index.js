@@ -73,21 +73,41 @@ const schema = new mongoose.Schema({
     twitter: String,
     age:Number
   });
+const schema1 = new mongoose.Schema({
+    userid: String,
+    index: Number,
+    reqlist : [String]
+  })
+  var whitelist = ['http://localhost:3000','https://flirtaid-nyk.web.app']
+  var corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    }
+  }
+app.use(cors(corsOptions)) ;
 var People = mongoose.model('users',schema) ;
 app.set('view engine', 'pug');
 app.use(express.json()) ; //Middleware
-app.use(cors()) ;
 app.enable('trust proxy')
 app.get('/' , (req,res)=>{
     console.log(req.ip);
     res.json('Hi World') ;
 });
+app.get('/getphoto/:userId',(req,res)=>{
+  People.find({_id:req.params.userId},(err,result)=>{
+  result[0].image.length > 0 ?res.status(200).json(result[0].image[0]):res.status(200).json('') ;
+  })
+})
 app.get('/getuser/:userId',(req,res)=>{
     People.find({_id:req.params.userId},(err,result)=>{
     res.status(200).json(result) ;
     })
 })
-app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People)}) ;
+app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
     const { gender,ihash } = req.body ;
     var arr = [] ;
