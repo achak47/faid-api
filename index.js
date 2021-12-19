@@ -90,6 +90,7 @@ const schema1 = new mongoose.Schema({
   }
 app.use(cors(corsOptions)) ;
 var People = mongoose.model('users',schema) ;
+var Index = mongoose.model('index',schema1) ;
 app.set('view engine', 'pug');
 app.use(express.json()) ; //Middleware
 app.enable('trust proxy')
