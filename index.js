@@ -52,6 +52,11 @@ const phash = new Map([
 function getKey(value) {
     return [...phash].find(([key, val]) => val == value)[0]
   }
+ function arrayRotate(arr, count) {
+    count -= arr.length * Math.floor(count / arr.length);
+    arr.push.apply(arr, arr.splice(0, count));
+    return arr;
+  }
 const schema = new mongoose.Schema({
     name : String,
     dept: String,
