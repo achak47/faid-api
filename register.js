@@ -65,7 +65,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     let mailOptions = {
         from : process.env.MAIL_USERNAME,
         to:email,
-        subject: "Test Mail from Flirt Aid !",
+        subject: "Verification Mail from Flirt Aid !",
         text : "Welcome to Flirt Aid community ",
         html : `
         <h2>Please click on the given link to activate your account</h2>
