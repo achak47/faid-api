@@ -118,7 +118,7 @@ app.get('/getuser/:userId',(req,res)=>{
     })
 })
 app.get('/getreqlist/:userId',(req,res)=>{
-  Index.find({"userid":userId},(err,result)=>{
+  Index.find({"userid":req.params.userId},(err,result)=>{
     res.status(200).json(result[0].reqlist) ;
   })
 })
