@@ -117,6 +117,11 @@ app.get('/getuser/:userId',(req,res)=>{
     res.status(200).json(result) ;
     })
 })
+app.get('/getreqlist/:userId',(req,res)=>{
+  Index.find({"userid":userId},(err,result)=>{
+    res.status(200).json(result[0].reqlist) ;
+  })
+})
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
      const { email,gender,ihash } = req.body ;
