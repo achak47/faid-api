@@ -252,42 +252,48 @@ app.post('/sendreq',(req,res)=>{
   });
 }) ;
 app.post('/resreq',(req,res)=>{
- const {des,email,emailsender} = req.body ;
- People.find({'email':email},(err,result)=>{
+ const {des,senderid,receiverid} = req.body ;
+ People.find({'_id':receiverid},(err,result)=>{
      result.forEach((item)=>{
          if(des == 1){
              var n = item.matches ;
-             People.find({'email':emailsender},(err,result)=>{
-                 result.forEach((i)=>{
-                     var num = i.matches ;
-                     var b = i.connected ;
-                     b.push(i._id) ;
-                     People.updateOne({'email':emailsender},
-                      {
-                        matches:num+1,
-                        connected:b
-                      }
-                     )
-                 })
-             })
-            var B = item.connected ;
-            B.push(item._id) ;
-            var m = item.matchreq;
-            m.filter(i => i != emailsender) ;
-             People.updateOne({'email':emailsender},
-             {
-                matches:n+1,
-                connected: B,
-                matchreq:m
-             })
-         }
+             var B = item.connected ;
+             B.push(senderid) ;
+             var m = item.matchreq;
+             m = m.filter(i => i != senderid) ;
+              People.updateOne({'_id':receiverid},
+              {
+                 matches:n+1,
+                 connected: B,
+                 matchreq:m
+              },function (err, docs){
+                if (err){
+                  console.log(err)
+                  res.status(200).json("Error occured !") ;
+              }
+              People.findOneAndUpdate({'_id':senderid},{ $push : { connected: receiverid } , $inc : {'matches' : 1}},(err,ress)=>{
+                if (err){
+                  console.log(err)
+                  res.status(200).json("Error occured !") ;
+              }
+                res.status(200).json("Accepted !")
+              })
+              })
+              }        
          else{
             var m = item.matchreq;
-            m.filter(i => i != emailsender) ;
-             People.updateOne({'email':emailsender},
+           m =  m.filter(i => i != senderid) ;
+             People.updateOne({'_id':receiverid},
              {
                 matchreq:m
+             },function (err, docs){
+              if (err){
+                console.log(err)
+                res.status(200).json("Error occured !") ;
+            }
+            res.status(200).json("Rejected !") ;
              })
+             console.log(m) ;
          }
      })
  })
