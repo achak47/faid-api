@@ -123,11 +123,34 @@ app.get('/getreqlist/:userId',(req,res)=>{
     console.log(arr)
     await Promise.all(result[0].reqlist.map(async (item)=>{
       await People.find({"_id":item},(err,ress)=>{
-             arr.push(ress[0])
+        var obj = {} ;
+        obj['name'] = ress[0].name ;
+        obj['dept'] = ress[0].dept ;
+        obj['Year'] = ress[0].Year ;
+        obj['image'] = ress[0].image ;
+        obj['hobbies'] = ress[0].hobbies ;
+        obj['passion'] = ress[0].passion ;
+        obj['matches'] = ress[0].matches ;
+        obj['bio'] = ress[0].bio ;
+        obj['insearch'] = ress[0].insearch ;
+        if(ress[0].connected.includes(req.params.userId))
+        { 
+          obj['status'] = "Accepted" ;
+          console.log(obj) ;
+        }
+        else if(ress[0].matchreq.includes(req.params.userId))
+        {        
+          obj['status'] = "Pending" ;
+          console.log(obj) ;
+         }
+        else{        
+          obj['status'] = "Rejected" ;
+          console.log(obj) ;
+        }
+        arr.push(obj)
       }).clone()
     })
     )
-    console.log(arr) ;
     res.status(200).json(arr)
   }).clone()
   .catch(err => res.status(400).json(err))
