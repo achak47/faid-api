@@ -118,9 +118,19 @@ app.get('/getuser/:userId',(req,res)=>{
     })
 })
 app.get('/getreqlist/:userId',(req,res)=>{
-  Index.find({"userid":req.params.userId},(err,result)=>{
-    res.status(200).json(result[0].reqlist) ;
-  })
+  Index.find({"userid":req.params.userId},async(err,result)=>{
+    var arr = [] ;
+    console.log(arr)
+    await Promise.all(result[0].reqlist.map(async (item)=>{
+      await People.find({"_id":item},(err,ress)=>{
+             arr.push(ress[0])
+      }).clone()
+    })
+    )
+    console.log(arr) ;
+    res.status(200).json(arr)
+  }).clone()
+  .catch(err => res.status(400).json(err))
 })
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
