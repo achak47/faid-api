@@ -210,19 +210,19 @@ app.get('/getconnected/:userId',(req,res)=>{
 })
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
-     const { email,gender,ihash } = req.body ;
+    const { email,gender,ihash } = req.body ;
     var m_req = [] ,id , con ;
-    //var gender ;
+    var Gender ;
+    console.log(email) ;
     People.find({'email':email},(err,result)=>{
        m_req = result[0].matchreq ;
        id = result[0]._id ;
        con = result[0].connected ;
-       //if(result[0].gender == 'Male') gender = 'Female' ;
-       //else gender = 'Male' ;
-    })
+       if(result[0].gender == 'Male') Gender = 'Female' ;
+       else Gender = 'Male' ;
     var arr = [] ;
     var flag = 0 ;
-    People.find({'gender':gender},(err,result)=>{
+    People.find({'gender':Gender},(err,result)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
@@ -256,7 +256,7 @@ app.post('/api',(req,res)=>{
         obj['interests'] = intr ;
         obj['gender'] = item.gender ;
         obj['matches'] = item.matches ;
-        obj['percent'] = (count/10)*100 ;
+        obj['percent'] = (count/37)*100 ;
         obj['image'] = item.image ;
         obj['email'] = item.email ;
         obj['flag'] = flag ;
@@ -271,6 +271,7 @@ app.post('/api',(req,res)=>{
         arr = arrayRotate(arr,idx) ;
         res.status(200).json(arr) ;
     })
+  })
 })
 app.post('/register',(req,res)=>{Register.register(req,res,bcrypt,nodemailer,People)}) ;
 app.post('/login',(req,res)=>{
