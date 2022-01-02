@@ -182,6 +182,32 @@ app.get('/getmatchlist/:userId',(req,res)=>{
   }).clone()
   .catch(err => res.status(400).json(err))
 })
+app.get('/getconnected/:userId',(req,res)=>{
+  People.find({"_id":req.params.userId},async(err,result)=>{
+    var arr = [] ;
+    console.log(arr)
+    await Promise.all(result[0].connected.map(async (item)=>{
+      await People.find({"_id":item},(err,ress)=>{
+        var obj = {} ;
+        obj['name'] = ress[0].name ;
+        obj['dept'] = ress[0].dept ;
+        obj['Year'] = ress[0].Year ;
+        obj['desc'] = ress[0].desc ;
+        obj['image'] = ress[0].image ;
+        obj['hobbies'] = ress[0].hobbies ;
+        obj['passion'] = ress[0].passion ;
+        obj['matches'] = ress[0].matches ;
+        obj['bio'] = ress[0].bio ;
+        obj['insearch'] = ress[0].insearch ;
+        obj['_id'] = ress[0]._id ;
+        arr.push(obj)
+      }).clone()
+    })
+    )
+    res.status(200).json(arr)
+  }).clone()
+  .catch(err => res.status(400).json(err))
+})
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
 app.post('/api',(req,res)=>{
      const { email,gender,ihash } = req.body ;
