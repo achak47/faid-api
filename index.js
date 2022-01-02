@@ -128,6 +128,7 @@ app.get('/getreqlist/:userId',(req,res)=>{
         obj['dept'] = ress[0].dept ;
         obj['Year'] = ress[0].Year ;
         obj['image'] = ress[0].image ;
+        obj['desc'] = ress[0].desc ;
         obj['hobbies'] = ress[0].hobbies ;
         obj['passion'] = ress[0].passion ;
         obj['matches'] = ress[0].matches ;
@@ -166,11 +167,13 @@ app.get('/getmatchlist/:userId',(req,res)=>{
         obj['dept'] = ress[0].dept ;
         obj['Year'] = ress[0].Year ;
         obj['image'] = ress[0].image ;
+        obj['desc'] = ress[0].desc ;
         obj['hobbies'] = ress[0].hobbies ;
         obj['passion'] = ress[0].passion ;
         obj['matches'] = ress[0].matches ;
         obj['bio'] = ress[0].bio ;
         obj['insearch'] = ress[0].insearch ;
+        obj['_id'] = ress[0]._id ;
         arr.push(obj)
       }).clone()
     })
