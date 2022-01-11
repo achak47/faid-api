@@ -55,13 +55,15 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     const token = jwt.sign ({name, email, password, gender}, account_activate_api_key, {expiresIn : '30m'});
     let testAccount = await nodemailer.createTestAccount ();
   console.log(process.env.MAIL_USERNAME ) ;
-  let transporter = nodemailer.createTransport ({
-    service:'gmail',
-    auth : {
-      user : process.env.MAIL_USERNAME,
-      pass : process.env.MAIL_PASSWORD 
+  let transporter = nodemailer.createTransport({
+    host: "smtp.yandex.ru",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'admin@flirtaid.social', // generated ethereal user
+      pass: 'Bekarapp@123', // generated ethereal password
     },
-  })
+  });
     let mailOptions = {
         from : process.env.MAIL_USERNAME,
         to:email,
