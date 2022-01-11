@@ -298,7 +298,7 @@ app.post('/update',(req,res)=>{
           hobbies : hobbies ,
           passion : interests ,
           ihash : arr ,
-          department : department ,
+          dept : department ,
           Year : Year ,
           insearch:insearch,
           insta:insta,
