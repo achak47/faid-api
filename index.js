@@ -241,7 +241,7 @@ app.post('/api',(req,res)=>{
                 }
                 else count ++ ;
             }
-          if(count/37 > 1) count = 0.99 ;
+          if(count/37 > 1) count = 36 ;
         }
     }
         obj['name'] = item.name ;
