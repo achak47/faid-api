@@ -96,7 +96,7 @@ const verify = (req,res,bcrypt,People,Index)=>{
         //decoding the jwt token received from the parameters of the authentication url
         jwt.verify (token, account_activate_api_key, function (err, decodedToken){
             if (err) {
-                return res.render('index', { title: 'Session timed out', message: 'Incorrect or expired link , Pls register again with the same email id' })
+                return res.render('index', { title: 'Session timed out', message: 'Session Expired ! Pls login to Flirtaid or if you are not registered then register again' })
             }
             const {name, email, password, gender} = decodedToken;
             People.find({'email':email},async(err,result)=>{
