@@ -120,6 +120,7 @@ const verify = (req,res,bcrypt,People,Index)=>{
                     dept:dept,
                     Year:Year,
                     gender:gender,
+                    isVerified:false,
                     age:0 
                 }).save((err,result)=>{
                     if(err) throw err ;
