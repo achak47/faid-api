@@ -74,6 +74,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
         <a href="${CLIENT_URL}/authentication/${token}">Click Here to verify</a>
         <p>Pls do it under 30 min</p>
         <p>If the above link is not working then browse to ${CLIENT_URL}/authentication/${token} </p>
+        <p>IF THE LINK IS NOT ACTIVE OR YOU CANNOT CLICK THE LINK FROM HERE , THEN COPY THE LINK AND PASTE IT ON YOUR BROWSER ( eg :- GOOGLE CHROME)</p>
         `
       }
       let info = transporter.sendMail (mailOptions, (error, info) => {
