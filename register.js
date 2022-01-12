@@ -72,6 +72,7 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
         html : `
         <h2>Please click on the given link to activate your account</h2>
         <a href="${CLIENT_URL}/authentication/${token}">Click Here to verify</a>
+        <p>Pls do it under 30 min</p>
         <p>If the above link is not working then browse to ${CLIENT_URL}/authentication/${token} </p>
         `
       }
