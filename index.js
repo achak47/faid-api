@@ -76,7 +76,8 @@ const schema = new mongoose.Schema({
     fb: String,
     insta: String,
     twitter: String,
-    age:Number
+    age:Number,
+    isVerified: Boolean
   });
 const schema1 = new mongoose.Schema({
     userid: String,
