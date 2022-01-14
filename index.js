@@ -112,11 +112,13 @@ app.get('/getphoto/:userId',(req,res)=>{
   result[0].image.length > 0 ?res.status(200).json(result[0].image[0]):res.status(200).json('') ;
   })
 })
+/*
 app.get('/getuser/:userId',(req,res)=>{
     People.find({_id:req.params.userId},(err,result)=>{
     res.status(200).json(result) ;
     })
 })
+*/
 app.get('/getreqlist/:userId',(req,res)=>{
   Index.find({"userid":req.params.userId},async(err,result)=>{
     var arr = [] ;
