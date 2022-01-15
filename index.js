@@ -222,11 +222,11 @@ app.post('/api',(req,res)=>{
        if(result[0].gender == 'Male') Gender = 'Female' ;
        else Gender = 'Male' ;
     var arr = [] ;
-    var flag = 0 ;
     People.find({'gender':Gender},(err,result)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
+          var flag = 0 ;
           if (item.matchreq.length > 0 && item.matchreq.includes(id)){
             flag = 1 ;
           }
