@@ -227,10 +227,10 @@ app.post('/api',(req,res)=>{
         //console.log(result) ;
         result.forEach((item)=>{
         if(item.ihash.length != 0){
-          if (item.matchreq.includes(id)){
+          if (item.matchreq.length > 0 && item.matchreq.includes(id)){
             flag = 1 ;
           }
-          if(item.connected.includes(id)){
+          if(item.connected.length > 0 && item.connected.includes(id)){
             flag = 2 ;
           }
         var obj = {} , intr = [];
