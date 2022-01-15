@@ -346,17 +346,10 @@ app.post('/resreq',(req,res)=>{
  People.find({'_id':receiverid},(err,result)=>{
      result.forEach((item)=>{
          if(des == 1){
-             var n = item.matches ;
-             var B = item.connected ;
-             B.push(senderid) ;
-             var m = item.matchreq;
-             m = m.filter(i => i != senderid) ;
-              People.updateOne({'_id':receiverid},
-              {
-                 matches:n+1,
-                 connected: B,
-                 matchreq:m
-              },function (err, docs){
+             var m = item.matchreq.filter(i => i != senderid) ;
+             People.findOneAndUpdate({'_id':receiverid},{ $push : { connected: senderid } ,
+            $set: {matchreq: m} ,
+            $inc : {'matches' : 1}},function (err, docs){
                 if (err){
                   console.log(err)
                   res.status(200).json("Error occured !") ;
@@ -373,10 +366,9 @@ app.post('/resreq',(req,res)=>{
          else{
             var m = item.matchreq;
            m =  m.filter(i => i != senderid) ;
-             People.updateOne({'_id':receiverid},
-             {
-                matchreq:m
-             },function (err, docs){
+             People.findOneAndUpdate({'_id':receiverid},
+            {$set : {matchreq: m}},
+             function (err, docs){
               if (err){
                 console.log(err)
                 res.status(200).json("Error occured !") ;
