@@ -380,6 +380,13 @@ app.post('/resreq',(req,res)=>{
      })
  })
 });
+app.post('/verifygender',(req,res)=>{
+  const {id,Gender,realgender} = req.body ;
+  People.findOneAndUpdate({_id:id , gender:Gender},{$set : {isVerified:true}},(err,docs)=>{
+    if(err) res.status(200).json(err) ;
+    return Gender==realgender?res.status(200).json("Verified !!!"):res.status(200).json("Gender does not match") ;
+  })
+});
 app.listen(process.env.PORT || port , ()=> {
     mongoose.connect(process.env.mongopath,{
         useNewUrlParser: true ,
