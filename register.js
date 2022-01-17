@@ -97,13 +97,15 @@ const verify = (req,res,bcrypt,People,Index)=>{
         //decoding the jwt token received from the parameters of the authentication url
         jwt.verify (token, account_activate_api_key, function (err, decodedToken){
             if (err) {
-                return res.render('index', { title: 'Session timed out', message: 'Session Expired ! Pls login to Flirtaid or if you are not registered then register again' })
+                return res.render('index', { title: 'Session timed out', message: 'Session Expired ! Pls login to Flirtaid or if you are not registered then register again',
+                    Link:'www.flirtaid.social' })
             }
             const {name, email, password, gender} = decodedToken;
             People.find({'email':email},async(err,result)=>{
                 if(err) throw err ;
                 if(result.length){
-                  return res.render('index', { title: 'Verified', message: 'You are verified , go and use our App' })
+                  return res.render('index', { title: 'Verified', message: 'You are verified , go and use our App',
+                    Link:'www.flirtaid.social' })
             }
             else{
                 var arr = []
@@ -132,7 +134,8 @@ const verify = (req,res,bcrypt,People,Index)=>{
                         reqlist: [],
                         emailuser: email
                       }).save((err,ree)=>{console.log(err)})
-                      return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid' })
+                      return res.render('index', { title: 'Verified', message: 'Your Account is verified , Login to flirtaid',
+                      Link:'www.flirtaid.social' })
                        }
                 })
             }
@@ -140,7 +143,7 @@ const verify = (req,res,bcrypt,People,Index)=>{
         })
     }
     else {
-        return res.render('index', { title: 'Error', message: 'Something went wrong !' }) ;
+        return res.render('index', { title: 'Error', message: 'Something went wrong !', Link:'' }) ;
     }
 }
 module.exports = {
