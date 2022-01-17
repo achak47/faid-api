@@ -119,23 +119,35 @@ app.get('/getuser/:userId',(req,res)=>{
     })
 })
 */
-app.get('/getreqlist/:userId',(req,res)=>{
-  Index.find({"userid":req.params.userId},async(err,result)=>{
+app.post('/getreqlist',(req,res)=>{
+  const {userId,ihash} = req.body ;
+  Index.find({"userid":userId},async(err,result)=>{
     var arr = [] ;
-    console.log(arr)
+    console.log(arr) ;
     await Promise.all(result[0].reqlist.map(async (item)=>{
       await People.find({"_id":item},(err,ress)=>{
+        if(ress.length){
         var obj = {} ;
         obj['name'] = ress[0].name ;
         obj['dept'] = ress[0].dept ;
+        obj['desc'] = ress[0].desc ;
         obj['Year'] = ress[0].Year ;
         obj['image'] = ress[0].image ;
-        obj['desc'] = ress[0].desc ;
         obj['hobbies'] = ress[0].hobbies ;
         obj['passion'] = ress[0].passion ;
         obj['matches'] = ress[0].matches ;
         obj['bio'] = ress[0].bio ;
         obj['insearch'] = ress[0].insearch ;
+        var count = 0 ;
+        for(var i=0;i<37;i++){
+            if(ihash[i] == ress[0].ihash[i]) {
+                if(ress[0].ihash[i])
+                count+=2 ;
+                else count ++ ;
+            }
+        }
+        if(count>37) count = 36 ;
+        obj['percent'] = Math.round((count/37)*100) ;
         if(ress[0].connected.includes(req.params.userId))
         { 
           obj['status'] = "Accepted" ;
@@ -151,6 +163,7 @@ app.get('/getreqlist/:userId',(req,res)=>{
           console.log(obj) ;
         }
         arr.push(obj)
+      }
       }).clone()
     })
     )
