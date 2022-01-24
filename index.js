@@ -85,7 +85,7 @@ const schema1 = new mongoose.Schema({
     reqlist : [String],
      emailuser : String
   })
-var whitelist = ['https://www.flirtaid.social','https://flirtaid.social','http://localhost:3000']
+var whitelist = ['https://www.flirtaid.social','https://flirtaid.social','http://localhost:3000','https://flirtaid-nyk.web.app']
   var corsOptions = {
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1) {
