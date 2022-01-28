@@ -209,6 +209,7 @@ app.get('/getconnected/:userId',(req,res)=>{
         obj['Year'] = ress[0].Year ;
         obj['desc'] = ress[0].desc ;
         obj['image'] = ress[0].image ;
+        obj['isverified'] = ress[0].isverified ;
         obj['hobbies'] = ress[0].hobbies ;
         obj['passion'] = ress[0].passion ;
         obj['matches'] = ress[0].matches ;
