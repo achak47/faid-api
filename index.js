@@ -97,7 +97,7 @@ var whitelist = ['https://www.flirtaid.social/','https://flirtaid.social/','http
   }
 app.use(cors()) ;
 app.get('/authentication/:token',(req,res)=>{Register.verify(req,res,bcrypt,People,Index)}) ;
-app.use(cors(corsOptions)) ;
+//app.use(cors(corsOptions)) ;
 var People = mongoose.model('users',schema) ;
 var Index = mongoose.model('index',schema1) ;
 app.set('view engine', 'pug');
