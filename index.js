@@ -276,6 +276,7 @@ app.post('/api',(req,res)=>{
         obj['percent'] = Math.round((count/37)*100) ;
         obj['image'] = item.image ;
         obj['email'] = item.email ;
+        obj['isVerified'] = item.isVerified ;
         obj['flag'] = flag ;
         arr.push(obj) ;
         }
