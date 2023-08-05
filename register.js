@@ -60,8 +60,8 @@ const register = (req,res,bcrypt,nodemailer,People)=>{
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'admin@flirtaid.social', // generated ethereal user
-      pass: 'Bekarapp@123', // generated ethereal password
+     user: process.env.MAIL_USERNAME, // generated ethereal user
+     pass: process.env.MAIL_PASSWORD,
     },
   });
     let mailOptions = {
